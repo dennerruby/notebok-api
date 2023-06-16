@@ -1,14 +1,38 @@
 namespace :dev do
   desc "Gerando dados de contatos"
   task setup: :environment do
-    puts "criando os contatos..."
-    200.times do |i|
+    puts "Resetando o banco de dados..."
+
+    # %x(rails db:drop db:create db:migrate)
+
+    puts "Cadastrando os tipos de contato..."
+
+    kinds = %w(Amigo Comercial Conhecido)
+
+    kinds.each do |kind|
+      Kind.create!(
+        description: kind
+      )
+    end
+
+    puts "Tipos Contato cadastrados com sucesso!"
+
+    ######################
+
+    puts "Cadastrando os contatos..."
+
+    100.times do |i|
       Contact.create!(
         name: Faker::Name.name,
         email: Faker::Internet.email,
-        birthdate: Faker::Date.between(from: '1991-09-23', to: '2014-09-25')
+        birthdate: Faker::Date.between(from: '1991-09-23', to: '2014-09-25'),
+        kind: Kind.all.sample
       )
     end
-  end
 
+    puts "Contatos cadastrados com sucesso!"
+  end
 end
+
+
+
